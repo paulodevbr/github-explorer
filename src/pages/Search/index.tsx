@@ -6,11 +6,18 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import logoImg from '../../assets/logo.svg';
 
-import { Container, Content, AnimationContainer } from './styles';
+import {
+  Container,
+  Content,
+  AnimationContainer,
+  UserFromSearch,
+  SearchResults,
+} from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { useToast } from '../../hooks/toast';
+import { useSearch } from '../../hooks/search';
 
 interface SearchFormData {
   search: string;
@@ -20,6 +27,7 @@ const Search: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
+  const { searchUsers, userList } = useSearch();
 
   const handleSubmit = useCallback(
     async (data: SearchFormData): Promise<void> => {
@@ -31,7 +39,8 @@ const Search: React.FC = () => {
         });
 
         await schema.validate(data, { abortEarly: false });
-        // TODO: search github api
+
+        await searchUsers({ searchText: data.search, per_page: 6, page: 1 });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -47,7 +56,7 @@ const Search: React.FC = () => {
         });
       }
     },
-    [addToast],
+    [searchUsers, addToast],
   );
 
   return (
@@ -61,6 +70,17 @@ const Search: React.FC = () => {
             <Button type="submit">Search</Button>
           </Form>
         </AnimationContainer>
+        {userList.length > 0 && (
+          <SearchResults>
+            {userList.map(user => (
+              <UserFromSearch key={user.id}>
+                <img src={user.avatar_url} alt={user.login} />
+
+                <span>{user.login}</span>
+              </UserFromSearch>
+            ))}
+          </SearchResults>
+        )}
       </Content>
     </Container>
   );
