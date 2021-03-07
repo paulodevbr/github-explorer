@@ -24,32 +24,41 @@ interface SearchUserParams {
 interface SearchContextData {
   userList: UserSearch[];
   searchUsers(params: SearchUserParams): Promise<void>;
+  loading: boolean;
 }
 
 const Search = createContext<SearchContextData>({} as SearchContextData);
 
 export const SearchProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<SearchState>({ userList: [] });
+  const [loading, setLoading] = useState(false);
 
   const searchUsers = useCallback(
     async ({ searchText, page, per_page }: SearchUserParams) => {
-      const response = (
-        await api.get<UserSearchResponse>('/search/users', {
-          params: {
-            q: searchText,
-            page,
-            per_page,
-          },
-        })
-      ).data;
+      setLoading(true);
+      try {
+        const response = (
+          await api.get<UserSearchResponse>('/search/users', {
+            params: {
+              q: searchText,
+              page,
+              per_page,
+            },
+          })
+        ).data;
 
-      setData({ userList: response.items });
+        setData({ userList: response.items });
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     },
     [],
   );
 
   return (
-    <Search.Provider value={{ userList: data.userList, searchUsers }}>
+    <Search.Provider value={{ userList: data.userList, searchUsers, loading }}>
       {children}
     </Search.Provider>
   );

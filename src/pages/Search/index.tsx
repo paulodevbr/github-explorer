@@ -18,6 +18,7 @@ import Button from '../../components/Button';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { useToast } from '../../hooks/toast';
 import { useSearch } from '../../hooks/search';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 interface SearchFormData {
   search: string;
@@ -27,7 +28,7 @@ const Search: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
-  const { searchUsers, userList } = useSearch();
+  const { searchUsers, userList, loading } = useSearch();
 
   const handleSubmit = useCallback(
     async (data: SearchFormData): Promise<void> => {
@@ -58,6 +59,18 @@ const Search: React.FC = () => {
     },
     [searchUsers, addToast],
   );
+
+  if (loading) {
+    return (
+      <Container>
+        <Content>
+          <AnimationContainer>
+            <LoadingSpinner />
+          </AnimationContainer>
+        </Content>
+      </Container>
+    );
+  }
 
   return (
     <Container>
