@@ -4,6 +4,7 @@ import { Form } from '@unform/web';
 
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
 import logoImg from '../../assets/logo.svg';
 
 import {
@@ -29,6 +30,7 @@ const Search: React.FC = () => {
 
   const { addToast } = useToast();
   const { searchUsers, userList, loading } = useSearch();
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SearchFormData): Promise<void> => {
@@ -86,10 +88,13 @@ const Search: React.FC = () => {
         {userList.length > 0 && (
           <SearchResults>
             {userList.map(user => (
-              <UserFromSearch key={user.id}>
-                <img src={user.avatar_url} alt={user.login} />
+              <UserFromSearch
+                key={user.id}
+                onClick={() => history.push(`/users/${user.username}`)}
+              >
+                <img src={user.avatar_url} alt={user.username} />
 
-                <span>{user.login}</span>
+                <span>{user.username}</span>
               </UserFromSearch>
             ))}
           </SearchResults>

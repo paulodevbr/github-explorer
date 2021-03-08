@@ -2,17 +2,21 @@ import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
 
 interface UserSearchResponse {
-  items: UserSearch[];
+  items: {
+    id: string;
+    login: string;
+    avatar_url: string;
+  }[];
 }
 
-interface UserSearch {
+interface UserFromList {
   id: string;
-  login: string;
+  username: string;
   avatar_url: string;
 }
 
 interface SearchState {
-  userList: UserSearch[];
+  userList: UserFromList[];
 }
 
 interface SearchUserParams {
@@ -22,7 +26,7 @@ interface SearchUserParams {
 }
 
 interface SearchContextData {
-  userList: UserSearch[];
+  userList: UserFromList[];
   searchUsers(params: SearchUserParams): Promise<void>;
   loading: boolean;
 }
@@ -47,7 +51,12 @@ export const SearchProvider: React.FC = ({ children }) => {
           })
         ).data;
 
-        setData({ userList: response.items });
+        setData({
+          userList: response.items.map(user => ({
+            ...user,
+            username: user.login,
+          })),
+        });
       } catch (err) {
         console.log(err);
       } finally {
