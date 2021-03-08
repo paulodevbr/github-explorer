@@ -20,6 +20,7 @@ import getValidationErrors from '../../utils/getValidationErrors';
 import { useToast } from '../../hooks/toast';
 import { useSearch } from '../../hooks/search';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { Pagination } from '../../components/Pagination';
 
 interface SearchFormData {
   search: string;
@@ -29,7 +30,14 @@ const Search: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { addToast } = useToast();
-  const { searchUsers, userList, loading } = useSearch();
+  const {
+    searchUsers,
+    searchPage,
+    total,
+    userList,
+    loading,
+    selectedPage,
+  } = useSearch();
   const history = useHistory();
 
   const handleSubmit = useCallback(
@@ -43,7 +51,7 @@ const Search: React.FC = () => {
 
         await schema.validate(data, { abortEarly: false });
 
-        await searchUsers({ searchText: data.search, per_page: 6, page: 1 });
+        await searchUsers({ searchText: data.search, perPage: 5, page: 1 });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -85,7 +93,7 @@ const Search: React.FC = () => {
             <Button type="submit">Search</Button>
           </Form>
         </AnimationContainer>
-        {userList.length > 0 && (
+        {userList && userList.length > 0 && (
           <SearchResults>
             {userList.map(user => (
               <UserFromSearch
@@ -97,6 +105,12 @@ const Search: React.FC = () => {
                 <span>{user.username}</span>
               </UserFromSearch>
             ))}
+            <Pagination
+              total={total}
+              selectedPage={selectedPage}
+              perPage={5}
+              onChangePage={async (page: number) => searchPage({ page })}
+            />
           </SearchResults>
         )}
       </Content>

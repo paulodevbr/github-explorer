@@ -39,7 +39,7 @@ export const AnimationContainer = styled.div`
   animation: ${fromUp} 1s;
 
   form {
-    margin: 80px 0;
+    margin: 40px 0;
     width: 100%;
     text-align: center;
 
@@ -57,24 +57,6 @@ export const AnimationContainer = styled.div`
       &:hover {
         color: ${shade(0.2, '#f4ede8')};
       }
-    }
-  }
-
-  > a {
-    color: #ff9000;
-    margin-top: 24px;
-    text-decoration: none;
-    transition: color 0.2s;
-
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin-right: 16px;
-    }
-
-    &:hover {
-      color: ${shade(0.2, '#ff9000')};
     }
   }
 `;
@@ -113,7 +95,7 @@ export const UserFromSearch = styled.div`
   width: 100%;
   flex-direction: row;
   align-items: center;
-  padding: 18px;
+  padding: 16px;
   background-color: ${colors.primaryLighter};
   border-radius: 10px;
 
@@ -124,8 +106,8 @@ export const UserFromSearch = styled.div`
   }
 
   img {
-    height: 60px;
-    border-radius: 30px;
+    height: 50px;
+    border-radius: 25px;
   }
 
   span {

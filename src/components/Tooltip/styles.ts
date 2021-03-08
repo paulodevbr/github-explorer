@@ -1,9 +1,10 @@
 import styled from 'styled-components';
+import { colors } from '../../styles/colors';
 
 export const Container = styled.div`
   position: relative;
   span {
-    background: #ff9000;
+    background: ${colors.accent};
     padding: 8px;
     border-radius: 14px;
     font-size: 14px;
@@ -23,7 +24,7 @@ export const Container = styled.div`
     &::before {
       content: '';
       border-style: solid;
-      border-color: #ff9000 transparent;
+      border-color: ${colors.accent} transparent;
       border-width: 6px 6px 0 6px;
       bottom: 20px;
       top: 100%;

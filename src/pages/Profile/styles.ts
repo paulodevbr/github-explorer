@@ -126,6 +126,4 @@ export const LanguagesCard = styled.div`
 export const ChartContainer = styled.div`
   height: 600px;
   width: 100%;
-  overflow-x: scroll;
-  overflow-y: scroll;
 `;
