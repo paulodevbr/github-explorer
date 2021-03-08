@@ -1,22 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
 import {
   BiGitRepoForked,
+  FiBook,
   FiBox,
   FiMapPin,
   FiStar,
   FiUsers,
 } from 'react-icons/all';
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 import {
   Container,
   Content,
   ProfileCard,
   ProfileInformation,
   PhotoColumn,
-  LanguagesCard,
   ChartContainer,
   ContainerCenter,
+  SimpleCard,
 } from './styles';
 
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -26,8 +29,10 @@ import Button from '../../components/Button';
 import { TextWithIcon } from '../../components/TextWithIcon';
 import { LanguagesChart } from '../../components/LanguagesChart';
 import { Title } from '../../components/Title';
+import TextArea from '../../components/TextArea';
 
 const Profile: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const { goBack } = useHistory();
   const { profile, repos, getProfile, loading, clearProfile } = useProfile();
   const { username } = useParams();
@@ -102,12 +107,22 @@ const Profile: React.FC = () => {
             </Row>
           </ProfileInformation>
         </ProfileCard>
-        <LanguagesCard>
+        <SimpleCard>
           <Title>Most used programming languages (%)</Title>
           <ChartContainer>
             <LanguagesChart data={repos.languages} />
           </ChartContainer>
-        </LanguagesCard>
+        </SimpleCard>
+        <SimpleCard>
+          <Form ref={formRef} onSubmit={() => ({})}>
+            <Title>Add note</Title>
+            <TextArea name="note" icon={FiBook} />
+            <Row full>
+              <Button>Save</Button>
+              <Button>Clear</Button>
+            </Row>
+          </Form>
+        </SimpleCard>
       </Content>
     </Container>
   );

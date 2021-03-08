@@ -3,7 +3,6 @@ import { colors } from '../../styles/colors';
 import isMobile from '../../utils/isMobile';
 
 export const Container = styled.div`
-  height: 100vh;
   display: flex;
   justify-content: center;
 `;
@@ -35,6 +34,7 @@ export const Content = styled.div`
   margin-top: 32px;
   margin-bottom: 32px;
   width: 95%;
+  max-width: 700px;
 `;
 
 export const ProfileCard = styled.div`
@@ -110,7 +110,7 @@ const fromBottom = keyframes`
   }
 `;
 
-export const LanguagesCard = styled.div`
+export const SimpleCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -121,6 +121,10 @@ export const LanguagesCard = styled.div`
   padding: ${isMobile() ? 12 : 32}px;
   margin-top: ${isMobile() ? 12 : 32}px;
   margin-bottom: 16px;
+
+  form {
+    width: 100%;
+  }
 `;
 
 export const ChartContainer = styled.div`
