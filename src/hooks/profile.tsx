@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
+import fromValuesToPercentage from '../utils/fromValuesToPercentage';
 
 interface Profile {
   id: string;
@@ -13,10 +14,6 @@ interface Profile {
   followers: number;
   following: number;
   repos_url: string;
-}
-
-interface LanguageResponse {
-  [key: string]: number;
 }
 
 export interface Language {
@@ -60,9 +57,29 @@ export const ProfileProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<ProfileState>({} as ProfileState);
   const [loading, setLoading] = useState(true);
 
-  // const countLanguages = async (languages: string[]): Promise<Language[]> => {
-  //
-  // };
+  const countLanguages = async (languages: string[]): Promise<Language[]> => {
+    const result: Language[] = [];
+
+    await languages
+      .filter(language => !!language)
+      .forEach(language => {
+        const indexLanguage = result.findIndex(
+          item => item && item.id === language,
+        );
+
+        if (indexLanguage >= 0) {
+          const itemArray = result[indexLanguage];
+          result[indexLanguage] = {
+            id: itemArray.id,
+            value: itemArray.value + 1,
+          };
+        } else {
+          result.push({ id: language, value: 1 });
+        }
+      });
+
+    return fromValuesToPercentage({ arrayWithValues: result });
+  };
 
   const getRepos = useCallback(
     async ({ profile }: { profile: Profile }): Promise<Repo> => {
@@ -101,9 +118,9 @@ export const ProfileProvider: React.FC = ({ children }) => {
 
       const repoLanguageList = repos.map(repo => repo.language || '');
 
-      // const languages = countLanguages(repoLanguageList);
+      const languages = await countLanguages(repoLanguageList);
 
-      return { ...repoData, count: repos.length, languages: [{} as Language] };
+      return { ...repoData, count: repos.length, languages };
     },
     [],
   );

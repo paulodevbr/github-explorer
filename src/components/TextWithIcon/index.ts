@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import isMobile from '../../utils/isMobile';
 
 interface Props {
   marginLeft?: string;
@@ -17,7 +18,13 @@ export const TextWithIcon = styled.div<Props>`
     `}
 
   span {
-    margin-left: 8px;
-    font-weight: bold;
+    ${isMobile()
+      ? css`
+          font-size: 14px;
+          margin-left: 4px;
+        `
+      : css`
+          margin-left: 8px;
+        `};
   }
 `;

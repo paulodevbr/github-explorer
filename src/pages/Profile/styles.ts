@@ -1,13 +1,19 @@
-import styled, { keyframes } from 'styled-components';
-import { shade, lighten } from 'polished';
-
-import signInBackgroundImg from '../../assets/sign-in-background.png';
+import styled, { css, keyframes } from 'styled-components';
 import { colors } from '../../styles/colors';
+import isMobile from '../../utils/isMobile';
 
 export const Container = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
+`;
+
+export const ContainerCenter = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 `;
 
 const fromUp = keyframes`
@@ -28,13 +34,12 @@ export const Content = styled.div`
   border-radius: 20px;
   margin-top: 32px;
   margin-bottom: 32px;
-  width: 100%;
-  max-width: 80%;
+  width: 95%;
 `;
 
 export const ProfileCard = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${isMobile() ? 'column' : 'row'};
   align-items: center;
   justify-content: flex-start;
   width: 100%;
@@ -50,8 +55,16 @@ export const PhotoColumn = styled.div`
   flex-direction: column;
 
   img {
-    height: 240px;
-    border-radius: 120px;
+    ${isMobile()
+      ? css`
+          margin-bottom: 16px;
+          height: 140px;
+          border-radius: 70px;
+        `
+      : css`
+          height: 240px;
+          border-radius: 120px;
+        `}
   }
 
   div {
@@ -74,10 +87,6 @@ export const ProfileInformation = styled.div`
   justify-content: flex-start;
   margin-left: 10%;
 
-  h1 {
-    font-size: 32px;
-  }
-
   span.username {
     font-weight: bold;
     color: ${colors.textLighter};
@@ -87,55 +96,6 @@ export const ProfileInformation = styled.div`
     font-weight: lighter;
     margin-top: 18px;
     margin-bottom: 18px;
-  }
-`;
-
-export const AnimationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  animation: ${fromUp} 1s;
-
-  form {
-    margin: 80px 0;
-    width: 100%;
-    text-align: center;
-
-    h1 {
-      margin-bottom: 24px;
-    }
-
-    a {
-      color: #f4ede8;
-      display: block;
-      margin-top: 24px;
-      text-decoration: none;
-      transition: color 0.2s;
-
-      &:hover {
-        color: ${shade(0.2, '#f4ede8')};
-      }
-    }
-  }
-
-  > a {
-    color: #ff9000;
-    margin-top: 24px;
-    text-decoration: none;
-    transition: color 0.2s;
-
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin-right: 16px;
-    }
-
-    &:hover {
-      color: ${shade(0.2, '#ff9000')};
-    }
   }
 `;
 
@@ -150,58 +110,22 @@ const fromBottom = keyframes`
   }
 `;
 
-export const SearchResults = styled.div`
-  width: 100%;
-  animation: ${fromBottom} 1s;
-`;
-
-const changeColor = keyframes`
-  from {
-    transform: translateY(0);
-    background-color: ${colors.primaryLighter};
-  }
-  to {
-    transform: translateY(-4px);
-    background-color: ${lighten(0.05, colors.primaryLighter)};
-  }
-`;
-
-export const UserFromSearch = styled.div`
-  margin-top: 16px;
-  cursor: pointer;
+export const LanguagesCard = styled.div`
   display: flex;
-  width: 100%;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  padding: 18px;
+  width: 100%;
+  border-radius: 20px;
   background-color: ${colors.primaryLighter};
-  border-radius: 10px;
-
-  &:hover {
-    transform: translateY(-4px);
-    animation: ${changeColor} 0.5s;
-    background-color: ${lighten(0.05, colors.primaryLighter)};
-  }
-
-  img {
-    height: 60px;
-    border-radius: 30px;
-  }
-
-  span {
-    color: #f4ede8;
-    margin-left: 16px;
-    font-size: 20px;
-    font-weight: bold;
-
-    &:hover {
-      color: ${shade(0.2, '#f4ede8')};
-    }
-  }
+  animation: ${fromBottom} 1s;
+  padding: ${isMobile() ? 12 : 32}px;
+  margin-top: ${isMobile() ? 12 : 32}px;
+  margin-bottom: 16px;
 `;
 
-export const Background = styled.div`
-  flex: 1;
-  background: url(${signInBackgroundImg}) no-repeat center;
-  background-size: cover;
+export const ChartContainer = styled.div`
+  height: 600px;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: scroll;
 `;

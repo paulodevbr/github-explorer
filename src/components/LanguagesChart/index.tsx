@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResponsivePie } from '@nivo/pie';
 import { Language } from '../../hooks/profile';
+import isMobile from '../../utils/isMobile';
 
 interface Props {
   data: Language[];
@@ -18,11 +19,34 @@ export const LanguagesChart: React.FC<Props> = ({
     colors={{ scheme: 'nivo' }}
     theme={{
       textColor: '#fff',
+      tooltip: {
+        container: {
+          color: '#000',
+        },
+      },
+
+      labels: {
+        text: {
+          fill: '#fff',
+        },
+      },
+      markers: {
+        lineColor: '#fff',
+        lineStrokeWidth: 1,
+        text: { fill: '#fff' },
+      },
+      annotations: {
+        text: {
+          fontSize: 13,
+          outlineWidth: 2,
+          outlineColor: '#ffffff',
+        },
+      },
     }}
     borderWidth={1}
     borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
     radialLabelsSkipAngle={10}
-    radialLabelsTextColor="#333333"
+    radialLabelsTextColor="#fff"
     radialLabelsLinkColor={{ from: 'color' }}
     sliceLabelsSkipAngle={10}
     sliceLabelsTextColor="#333333"
@@ -99,14 +123,14 @@ export const LanguagesChart: React.FC<Props> = ({
     legends={[
       {
         anchor: 'bottom',
-        direction: 'row',
+        direction: isMobile() ? 'column' : 'row',
         justify: false,
         translateX: 0,
         translateY: 56,
         itemsSpacing: 0,
         itemWidth: 100,
         itemHeight: 18,
-        itemTextColor: '#999',
+        itemTextColor: '#fff',
         itemDirection: 'left-to-right',
         itemOpacity: 1,
         symbolSize: 18,
@@ -115,7 +139,7 @@ export const LanguagesChart: React.FC<Props> = ({
           {
             on: 'hover',
             style: {
-              itemTextColor: '#000',
+              itemTextColor: '#fff',
             },
           },
         ],

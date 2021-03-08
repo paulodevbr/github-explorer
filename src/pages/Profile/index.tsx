@@ -14,6 +14,9 @@ import {
   ProfileCard,
   ProfileInformation,
   PhotoColumn,
+  LanguagesCard,
+  ChartContainer,
+  ContainerCenter,
 } from './styles';
 
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -21,6 +24,8 @@ import { useProfile } from '../../hooks/profile';
 import { Row } from '../../components/Row';
 import Button from '../../components/Button';
 import { TextWithIcon } from '../../components/TextWithIcon';
+import { LanguagesChart } from '../../components/LanguagesChart';
+import { Title } from '../../components/Title';
 
 const Profile: React.FC = () => {
   const { goBack } = useHistory();
@@ -28,18 +33,16 @@ const Profile: React.FC = () => {
   const { username } = useParams();
 
   useEffect(() => {
-    if (!profile && loading) {
+    if ((!profile && loading) || profile.login !== username) {
       getProfile({ username });
     }
   }, [getProfile, profile, loading, username]);
 
   if (loading || !profile || !repos) {
     return (
-      <Container>
-        <Content>
-          <LoadingSpinner />
-        </Content>
-      </Container>
+      <ContainerCenter>
+        <LoadingSpinner />
+      </ContainerCenter>
     );
   }
 
@@ -58,7 +61,7 @@ const Profile: React.FC = () => {
           </PhotoColumn>
 
           <ProfileInformation>
-            <h1>{profile.name}</h1>
+            <Title>{profile.name}</Title>
             <span className="username">{profile.login}</span>
 
             {profile.location && (
@@ -99,6 +102,12 @@ const Profile: React.FC = () => {
             </Row>
           </ProfileInformation>
         </ProfileCard>
+        <LanguagesCard>
+          <Title>Most used programming languages (%)</Title>
+          <ChartContainer>
+            <LanguagesChart data={repos.languages} />
+          </ChartContainer>
+        </LanguagesCard>
       </Content>
     </Container>
   );
