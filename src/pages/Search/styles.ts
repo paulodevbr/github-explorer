@@ -1,7 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { shade, lighten } from 'polished';
 
-import signInBackgroundImg from '../../assets/sign-in-background.png';
 import { colors } from '../../styles/colors';
 
 export const Container = styled.div`
@@ -120,10 +119,4 @@ export const UserFromSearch = styled.div`
       color: ${shade(0.2, '#f4ede8')};
     }
   }
-`;
-
-export const Background = styled.div`
-  flex: 1;
-  background: url(${signInBackgroundImg}) no-repeat center;
-  background-size: cover;
 `;

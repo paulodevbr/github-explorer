@@ -1,6 +1,15 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import isMobile from '../../utils/isMobile';
 
-export const Title = styled.h1`
+interface Props {
+  marginBottom?: string;
+}
+
+export const Title = styled.h1<Props>`
   font-size: ${isMobile() ? 18 : 28}px;
+  ${props =>
+    props.marginBottom &&
+    css`
+      margin-bottom: ${props.marginBottom}px;
+    `}
 `;

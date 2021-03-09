@@ -99,34 +99,6 @@ export const ProfileInformation = styled.div`
   }
 `;
 
-const fromBottom = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(100px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-export const SimpleCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  border-radius: 20px;
-  background-color: ${colors.primaryLighter};
-  animation: ${fromBottom} 1s;
-  padding: ${isMobile() ? 12 : 32}px;
-  margin-top: ${isMobile() ? 12 : 32}px;
-  margin-bottom: 16px;
-
-  form {
-    width: 100%;
-  }
-`;
-
 export const ChartContainer = styled.div`
   height: 600px;
   width: 100%;
