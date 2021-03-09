@@ -3,7 +3,6 @@ import { Form } from '@unform/web';
 import { FiBook } from 'react-icons/all';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
-import * as Datefns from 'date-fns';
 import { Title } from '../../../../components/Title';
 import TextArea from '../../../../components/TextArea';
 import { Row } from '../../../../components/Row';
@@ -11,11 +10,12 @@ import { SimpleCard } from '../../../../components/SimpleCard';
 import { useNotes } from '../../../../hooks/notes';
 import { ContainerCenter } from '../../styles';
 import { LoadingSpinner } from '../../../../components/LoadingSpinner';
-import { ActionButton } from './styles';
+import { ActionButton, NoteCard } from './styles';
 import { useScroll } from '../../../../hooks/scroll';
 import getValidationErrors from '../../../../utils/getValidationErrors';
 import { useToast } from '../../../../hooks/toast';
 import { useProfile } from '../../../../hooks/profile';
+import formatDateTodayYesterday from '../../../../utils/formatDateTodayYesterday';
 
 interface CreateNotesFormData {
   text: string;
@@ -34,6 +34,21 @@ export const NotesSection: React.FC = () => {
     notes && notes.length
       ? notes.filter(note => note.username === profile.login)
       : null;
+
+  // const notesFromUser = [
+  //   {
+  //     id: 'fasdfad',
+  //     text: 'teste de texto aqui',
+  //     username: 'pauloxtr3m',
+  //     createdAt: new Date(2021, 2, 8, 10, 10),
+  //   },
+  //   {
+  //     id: 'fasdfada',
+  //     text: 'teste de texto2 aqui',
+  //     username: 'pauloxtr3m',
+  //     createdAt: new Date(2021, 2, 9, 9, 30),
+  //   },
+  // ];
 
   useEffect(() => {
     if (!init && createNotesRef.current) {
@@ -101,12 +116,10 @@ export const NotesSection: React.FC = () => {
       {notesFromUser &&
         notesFromUser.length &&
         notesFromUser.map(note => (
-          <SimpleCard>
-            <span>
-              {Datefns.format(note.createdAt, 'MM/dd/yyyy hh:mm aaa')}
-            </span>
+          <NoteCard>
+            <span>{formatDateTodayYesterday(note.createdAt)}</span>
             <p>{note.text}</p>
-          </SimpleCard>
+          </NoteCard>
         ))}
     </>
   );
