@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { shade, lighten } from 'polished';
 
 import { colors } from '../../styles/colors';
@@ -34,6 +34,7 @@ export const AnimationContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-height: 60%;
   width: 100%;
   animation: ${fromUp} 1s;
 
@@ -58,6 +59,30 @@ export const AnimationContainer = styled.div`
       }
     }
   }
+`;
+
+const toUp = keyframes`
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.6);
+  }
+`;
+
+interface LogoProps {
+  visible?: boolean;
+}
+
+export const Logo = styled.img<LogoProps>`
+  max-height: 60%;
+  max-width: 95%;
+  animation: ${props => (props.visible ? fromUp : toUp)} 0.5s;
+  ${props =>
+    !props.visible &&
+    css`
+      transform: scale(0.6);
+    `}
 `;
 
 const fromBottom = keyframes`
@@ -88,7 +113,7 @@ const changeColor = keyframes`
 `;
 
 export const UserFromSearch = styled.div`
-  margin-top: 16px;
+  margin-top: 12px;
   cursor: pointer;
   display: flex;
   width: 100%;

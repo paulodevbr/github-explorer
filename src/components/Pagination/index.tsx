@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ButtonPagination, RowPagination } from './styles';
 import getArrayOfNumbers from '../../utils/getArrayOfNumbers';
 import isMobile from '../../utils/isMobile';
@@ -19,6 +19,15 @@ export const Pagination: React.FC<Props> = ({
   const numberOfPages = Math.floor(total / perPage);
   const pagesLimit = isMobile() ? 10 : 19;
 
+  const handleChangePage = useCallback(
+    async (pageNumber: number) => {
+      if (selectedPage !== pageNumber) {
+        await onChangePage(pageNumber);
+      }
+    },
+    [onChangePage, selectedPage],
+  );
+
   return (
     <RowPagination full>
       {getArrayOfNumbers(numberOfPages)
@@ -26,7 +35,7 @@ export const Pagination: React.FC<Props> = ({
         .map(pageNumber => (
           <ButtonPagination
             selected={selectedPage === pageNumber}
-            onClick={() => onChangePage(pageNumber)}
+            onClick={() => handleChangePage(pageNumber)}
           >
             {pageNumber}
           </ButtonPagination>

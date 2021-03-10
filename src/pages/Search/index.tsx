@@ -13,6 +13,7 @@ import {
   AnimationContainer,
   UserFromSearch,
   SearchResults,
+  Logo,
 } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -39,6 +40,8 @@ const Search: React.FC = () => {
     selectedPage,
   } = useSearch();
   const history = useHistory();
+
+  const hasUserList = userList && userList.length > 0;
 
   const handleSubmit = useCallback(
     async (data: SearchFormData): Promise<void> => {
@@ -86,7 +89,7 @@ const Search: React.FC = () => {
     <Container>
       <Content>
         <AnimationContainer>
-          <img src={logoImg} alt="GoBarber" />
+          <Logo src={logoImg} alt="github_explorer" visible={!hasUserList} />
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Search for github user</h1>
             <Input name="search" icon={FiUser} placeholder="github-user" />

@@ -15,4 +15,9 @@ export const NoteCard = styled(SimpleCard)`
     font-size: 12px;
     color: ${lighten(0.3, colors.primaryLighter)};
   }
+  p {
+    margin-top: 8px;
+    text-align: justify;
+    text-justify: inter-word;
+  }
 `;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { Form } from '@unform/web';
 import { FiBook } from 'react-icons/all';
 import { FormHandles } from '@unform/core';
@@ -18,44 +18,31 @@ import { useProfile } from '../../../../hooks/profile';
 import formatDateTodayYesterday from '../../../../utils/formatDateTodayYesterday';
 
 interface CreateNotesFormData {
-  text: string;
+  content: string;
 }
 
 export const NotesSection: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const createNotesRef = useRef<HTMLDivElement>(null);
-  const [init, setInit] = useState(false);
-  const { notes, addNote, loading } = useNotes();
+  const { notes, loadUserNotes, createNote, clearNotes, loading } = useNotes();
   const { setRefComponent } = useScroll();
   const { addToast } = useToast();
   const { profile } = useProfile();
 
   const notesFromUser =
-    notes && notes.length
-      ? notes.filter(note => note.username === profile.login)
+    notes && notes.length && profile
+      ? notes.filter(note => note.userId === profile.id.toString())
       : null;
 
-  // const notesFromUser = [
-  //   {
-  //     id: 'fasdfad',
-  //     text: 'teste de texto aqui',
-  //     username: 'pauloxtr3m',
-  //     createdAt: new Date(2021, 2, 8, 10, 10),
-  //   },
-  //   {
-  //     id: 'fasdfada',
-  //     text: 'teste de texto2 aqui',
-  //     username: 'pauloxtr3m',
-  //     createdAt: new Date(2021, 2, 9, 9, 30),
-  //   },
-  // ];
-
   useEffect(() => {
-    if (!init && createNotesRef.current) {
+    if (createNotesRef.current) {
       setRefComponent({ key: 'create-note', component: createNotesRef });
-      setInit(true);
     }
-  }, [init, createNotesRef, setRefComponent]);
+
+    loadUserNotes({ userId: profile.id });
+
+    return () => clearNotes();
+  }, []);
 
   const handleSubmit = useCallback(
     async (data: CreateNotesFormData): Promise<void> => {
@@ -63,12 +50,12 @@ export const NotesSection: React.FC = () => {
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
-          text: Yup.string().required('Text required'),
+          content: Yup.string().required('Text required'),
         });
 
         await schema.validate(data, { abortEarly: false });
 
-        await addNote({ text: data.text, username: profile.login });
+        await createNote({ content: data.content, userId: profile.id });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -84,7 +71,7 @@ export const NotesSection: React.FC = () => {
         });
       }
     },
-    [profile, addNote, addToast],
+    [profile, createNote, addToast],
   );
 
   if (loading) {
@@ -101,12 +88,14 @@ export const NotesSection: React.FC = () => {
         <SimpleCard ref={createNotesRef}>
           <Form ref={formRef} onSubmit={handleSubmit}>
             <Title>New note</Title>
-            <TextArea name="text" icon={FiBook} />
+            <TextArea name="content" icon={FiBook} />
             <Row withSpaceBetween width="50%">
               <ActionButton onClick={() => formRef.current?.submitForm()}>
                 Save
               </ActionButton>
-              <ActionButton onClick={() => formRef.current?.clearField('note')}>
+              <ActionButton
+                onClick={() => formRef.current?.clearField('content')}
+              >
                 Clear
               </ActionButton>
             </Row>
@@ -118,7 +107,7 @@ export const NotesSection: React.FC = () => {
         notesFromUser.map(note => (
           <NoteCard>
             <span>{formatDateTodayYesterday(note.createdAt)}</span>
-            <p>{note.text}</p>
+            <p>{note.content}</p>
           </NoteCard>
         ))}
     </>

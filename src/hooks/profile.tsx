@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
-import api from '../services/api';
 import fromValuesToPercentage from '../utils/fromValuesToPercentage';
+import apiGithub from '../services/apiGithub';
 
 interface Profile {
   id: string;
@@ -96,7 +96,7 @@ export const ProfileProvider: React.FC = ({ children }) => {
         };
         const reposReponse =
           // eslint-disable-next-line no-await-in-loop
-          (await api.get<RepoResponse[]>(profile.repos_url, config)).data;
+          (await apiGithub.get<RepoResponse[]>(profile.repos_url, config)).data;
 
         const filteredRepos = reposReponse.filter(repo => !repo.fork);
 
@@ -129,7 +129,8 @@ export const ProfileProvider: React.FC = ({ children }) => {
     async ({ username }: SearchProfileParams) => {
       setLoading(true);
       try {
-        const profile = (await api.get<Profile>(`/users/${username}`)).data;
+        const profile = (await apiGithub.get<Profile>(`/users/${username}`))
+          .data;
         const repos = await getRepos({ profile });
 
         setData({ profile, repos });

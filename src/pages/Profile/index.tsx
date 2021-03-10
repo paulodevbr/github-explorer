@@ -16,6 +16,7 @@ import {
   PhotoColumn,
   ChartContainer,
   ContainerCenter,
+  ProfileButtom,
 } from './styles';
 
 import { LoadingSpinner } from '../../components/LoadingSpinner';
@@ -28,18 +29,23 @@ import { Title } from '../../components/Title';
 import { SimpleCard } from '../../components/SimpleCard';
 import { NotesSection } from './components/NotesSection';
 import { useScroll } from '../../hooks/scroll';
+import { ActionButton } from './components/NotesSection/styles';
+import { useNotes } from '../../hooks/notes';
 
 const Profile: React.FC = () => {
   const { goBack } = useHistory();
   const { username } = useParams();
   const { profile, repos, getProfile, loading, clearProfile } = useProfile();
   const { scrollToComponent } = useScroll();
+  const { notes } = useNotes();
+
+  const userHasNotes = notes && notes.length > 0;
 
   useEffect(() => {
-    if ((!profile && loading) || profile.login !== username) {
-      getProfile({ username });
-    }
-  }, [getProfile, profile, loading, username]);
+    getProfile({ username });
+
+    return () => clearProfile();
+  }, []);
 
   if (loading || !profile || !repos) {
     return (
@@ -57,7 +63,7 @@ const Profile: React.FC = () => {
   return (
     <Container>
       <Content>
-        <Button onClick={handleGoBack}>Voltar</Button>
+        <Button onClick={handleGoBack}>Go back</Button>
         <ProfileCard>
           <PhotoColumn>
             <img src={profile.avatar_url} alt="avatar" />
@@ -103,10 +109,15 @@ const Profile: React.FC = () => {
                 <span>{`${repos.forks_count} forks`}</span>
               </TextWithIcon>
             </Row>
-            <Row>
-              <Button onClick={() => scrollToComponent('create-note')}>
+            <Row withSpaceBetween width="100%">
+              <ProfileButtom onClick={() => scrollToComponent('create-note')}>
                 New note
-              </Button>
+              </ProfileButtom>
+              {userHasNotes && (
+                <ProfileButtom onClick={() => scrollToComponent('create-note')}>
+                  Show notes
+                </ProfileButtom>
+              )}
             </Row>
           </ProfileInformation>
         </ProfileCard>

@@ -1,6 +1,7 @@
 import styled, { css, keyframes } from 'styled-components';
 import { colors } from '../../styles/colors';
 import isMobile from '../../utils/isMobile';
+import Button from '../../components/Button';
 
 export const Container = styled.div`
   display: flex;
@@ -102,4 +103,8 @@ export const ProfileInformation = styled.div`
 export const ChartContainer = styled.div`
   height: 600px;
   width: 100%;
+`;
+
+export const ProfileButtom = styled(Button)`
+  max-width: 120px;
 `;

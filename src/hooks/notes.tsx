@@ -1,10 +1,19 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
-import { uuid } from 'uuidv4';
+import { parseISO } from 'date-fns';
+import { useToast } from './toast';
+import api from '../services/api';
+
+interface NoteResponse {
+  id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+}
 
 interface Note {
   id: string;
-  username: string;
-  text: string;
+  userId: string;
+  content: string;
   createdAt: Date;
 }
 
@@ -12,50 +21,104 @@ interface NotesState {
   notes: Note[];
 }
 
+interface LoadUserNotesParams {
+  userId: string;
+}
+
 interface AddNoteParams {
-  username: string;
-  text: string;
+  userId: string;
+  content: string;
 }
 
 interface NotesContextData {
   notes: Note[];
   loading: boolean;
-  addNote(params: AddNoteParams): Promise<Note>;
+  createNote(params: AddNoteParams): Promise<void>;
+  loadUserNotes(params: LoadUserNotesParams): Promise<void>;
+  clearNotes(): void;
 }
 
 const Notes = createContext<NotesContextData>({} as NotesContextData);
 
 export const NotesProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<NotesState>({ notes: [] });
+  const [data, setData] = useState<NotesState>({} as NotesState);
   const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
 
-  const addNote = useCallback(
-    async ({ username, text }: AddNoteParams) => {
+  const loadUserNotes = useCallback(async ({ userId }: { userId: string }) => {
+    setLoading(true);
+
+    try {
+      const notesReponse = (await api.get<NoteResponse[]>(`/notes/${userId}`))
+        .data;
+
+      const notes = notesReponse.map(note => ({
+        id: note.id,
+        userId: note.user_id,
+        content: note.content,
+        createdAt: parseISO(note.created_at),
+      }));
+
+      setData({ notes });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const createNote = useCallback(
+    async ({ userId, content }: AddNoteParams) => {
       setLoading(true);
 
-      const newNote: Note = {
-        id: uuid(),
-        username,
-        text,
-        createdAt: new Date(Date.now()),
-      };
+      try {
+        const noteResponse = (
+          await api.post<NoteResponse>(`/notes`, {
+            user_id: userId.toString(),
+            content,
+          })
+        ).data;
 
-      const newNotes = [...data.notes, newNote];
+        const newNote: Note = {
+          id: noteResponse.id,
+          userId: noteResponse.user_id,
+          content: noteResponse.content,
+          createdAt: parseISO(noteResponse.created_at),
+        };
 
-      setData({ notes: newNotes });
+        const newNotes = [...data.notes, newNote];
 
-      setLoading(false);
-      return Promise.resolve(newNote);
+        setData({ notes: newNotes });
+
+        setLoading(false);
+        addToast({
+          type: 'success',
+          title: 'Note saved',
+          description: 'Note was saved successfully!',
+        });
+      } catch (e) {
+        if (e.response) {
+          console.log(e.response.data.validation.body);
+        } else {
+          console.log(e);
+        }
+      } finally {
+        setLoading(false);
+      }
     },
-    [data.notes],
+    [data.notes, addToast],
   );
+
+  const clearNotes = useCallback(() => setData({} as NotesState), []);
 
   return (
     <Notes.Provider
       value={{
         notes: data.notes,
         loading,
-        addNote,
+        createNote,
+        loadUserNotes,
+        clearNotes,
       }}
     >
       {children}
