@@ -1,10 +1,18 @@
 ## Github Explorer
 
-A React project .
+A React project to take notes about github users.
 
 ## Setup
 
+Firstly, setup and run [Github Explorer backend](https://github.com/pauloXtr3m/github-explorer-backend)
+
+To download dependencies run:
+
 ### `yarn`
+
+### Environment
+
+Rename `.env.example` to `.env`
 
 ## Run
 
@@ -22,13 +30,3 @@ You will also see any lint errors in the console.
 
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
