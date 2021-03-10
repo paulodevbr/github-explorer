@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useState, useContext } from 'react';
 import { parseISO } from 'date-fns';
-import { useToast } from './toast';
 import api from '../services/api';
 
 interface NoteResponse {
@@ -43,7 +42,6 @@ const Notes = createContext<NotesContextData>({} as NotesContextData);
 export const NotesProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<NotesState>({} as NotesState);
   const [loading, setLoading] = useState(false);
-  const { addToast } = useToast();
 
   const loadUserNotes = useCallback(async ({ userId }: { userId: string }) => {
     setLoading(true);
@@ -91,11 +89,6 @@ export const NotesProvider: React.FC = ({ children }) => {
         setData({ notes: newNotes });
 
         setLoading(false);
-        addToast({
-          type: 'success',
-          title: 'Note saved',
-          description: 'Note was saved successfully!',
-        });
       } catch (e) {
         if (e.response) {
           console.log(e.response.data.validation.body);
@@ -106,7 +99,7 @@ export const NotesProvider: React.FC = ({ children }) => {
         setLoading(false);
       }
     },
-    [data.notes, addToast],
+    [data.notes],
   );
 
   const clearNotes = useCallback(() => setData({} as NotesState), []);

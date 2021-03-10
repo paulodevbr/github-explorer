@@ -14,6 +14,7 @@ import {
   UserFromSearch,
   SearchResults,
   Logo,
+  LoadingContainer,
 } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -73,18 +74,6 @@ const Search: React.FC = () => {
     [searchUsers, addToast],
   );
 
-  if (loading) {
-    return (
-      <Container>
-        <Content>
-          <AnimationContainer>
-            <LoadingSpinner />
-          </AnimationContainer>
-        </Content>
-      </Container>
-    );
-  }
-
   return (
     <Container>
       <Content>
@@ -93,21 +82,29 @@ const Search: React.FC = () => {
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Search for github user</h1>
             <Input name="search" icon={FiUser} placeholder="github-user" />
-            <Button type="submit">Search</Button>
+            <Button type="submit" loading={loading}>
+              Search
+            </Button>
           </Form>
         </AnimationContainer>
+        {loading && (
+          <LoadingContainer>
+            <LoadingSpinner />
+          </LoadingContainer>
+        )}
         {userList && userList.length > 0 && (
           <SearchResults>
-            {userList.map(user => (
-              <UserFromSearch
-                key={user.id}
-                onClick={() => history.push(`/users/${user.username}`)}
-              >
-                <img src={user.avatar_url} alt={user.username} />
+            {!loading &&
+              userList.map(user => (
+                <UserFromSearch
+                  key={user.id}
+                  onClick={() => history.push(`/users/${user.username}`)}
+                >
+                  <img src={user.avatar_url} alt={user.username} />
 
-                <span>{user.username}</span>
-              </UserFromSearch>
-            ))}
+                  <span>{user.username}</span>
+                </UserFromSearch>
+              ))}
             <Pagination
               total={total}
               selectedPage={selectedPage}

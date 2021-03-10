@@ -56,6 +56,13 @@ export const NotesSection: React.FC = () => {
         await schema.validate(data, { abortEarly: false });
 
         await createNote({ content: data.content, userId: profile.id });
+
+        formRef.current?.clearField('content');
+        addToast({
+          type: 'success',
+          title: 'Note saved',
+          description: 'Note was saved successfully!',
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -74,14 +81,6 @@ export const NotesSection: React.FC = () => {
     [profile, createNote, addToast],
   );
 
-  if (loading) {
-    return (
-      <ContainerCenter>
-        <LoadingSpinner />
-      </ContainerCenter>
-    );
-  }
-
   return (
     <>
       <div ref={createNotesRef} style={{ width: '100%' }}>
@@ -90,11 +89,15 @@ export const NotesSection: React.FC = () => {
             <Title>New note</Title>
             <TextArea name="content" icon={FiBook} />
             <Row withSpaceBetween width="50%">
-              <ActionButton onClick={() => formRef.current?.submitForm()}>
+              <ActionButton
+                onClick={() => formRef.current?.submitForm()}
+                loading={loading}
+              >
                 Save
               </ActionButton>
               <ActionButton
                 onClick={() => formRef.current?.clearField('content')}
+                loading={loading}
               >
                 Clear
               </ActionButton>

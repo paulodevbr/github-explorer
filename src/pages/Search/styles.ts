@@ -96,6 +96,26 @@ const fromBottom = keyframes`
   }
 `;
 
+const scale = keyframes`
+  from {
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(1);
+  }
+`;
+
+export const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 380px;
+  width: 100%;
+  animation: ${scale} 0.6s;
+`;
+
 export const SearchResults = styled.div`
   width: 100%;
   animation: ${fromBottom} 1s;
